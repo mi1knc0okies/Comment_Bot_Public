@@ -30,13 +30,13 @@ ts = len(subs) - 1
 
 def sleeptimer(time):
     sleeptime = time / 60
-    print('Sleeping for '+str(sleeptime)+' mins.', 'It is currently '+str(datetime.now().strftime('%h:%m')))
+    print('Sleeping for '+str(sleeptime)+' mins.', 'It is currently '+str(datetime.now().strftime('%H:%M')))
     return sleep(time)
 
 
 def close_file(pid):
     with open("commented_post.txt", "w") as f:
-        f.write(str(pid) + "\n")
+        f.write(str(pid))
         f.close()
 
 
@@ -54,9 +54,9 @@ def comment():
             for submission in posts:
                 if submission not in pid:
                     pid.append(submission)
-            post_id = []
-            post_id.append(pid[random.randint(0, 5)])
-            bot.submission(id=post_id[0]).reply(str(phrases[random.randint(0, tp)]))
+
+            post_id = pid[random.randint(0, 5)]
+            bot.submission(id=post_id).reply(str(phrases[random.randint(0, tp)]))
             close_file(post_id)
             #sleeptimer(random.randint(300,900))
             sleeptimer(45)
