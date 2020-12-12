@@ -13,7 +13,7 @@ bot.validate_on_submit = True
 
 
 # Enter your comment phrases here surrounded by parentheses, separated by a comma ie, "wow", "that's awesome!"
-phrases = ['damn that is hot!', 'sexy!', 'mmm yummy!', '🥵🥵🥵', 'if only I had one of these 🍆', 'can I join you?',
+phrases = ['damn that is hot!', 'sexy!', 'mmm yummy!', '🥵🥵🥵', 'can I join you?',
            'damn 💦💦💦', '😻😻😻', '💦💦💦', '😍😍😍😍', ]
 tp = len(phrases) - 1
 
