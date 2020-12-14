@@ -9,11 +9,12 @@ import os
 # You will also need to enter your username and password. User_agent is the name you want to the bot to display
 bot = praw.Reddit(user_agent="Naughty Marie", client_id="I0i4OOSupvEkpg", client_secret="G6fQ8ss9rTz6fIf3UlCFDKpo8_0",
                   username="naughtymarie", password="chester1985")
+
 bot.validate_on_submit = True
 
 
 # Enter your comment phrases here surrounded by parentheses, separated by a comma ie, "wow", "that's awesome!"
-phrases = ['damn that is hot!', 'sexy!', 'mmm yummy!', '🥵🥵🥵', 'can I join you?',
+phrases = ['damn that is hot!', 'sexy!', 'mmm yummy!', '🥵🥵🥵', 'can I join you?', 'I love seeing your post!❤️❤️❤️',
            'damn 💦💦💦', '😻😻😻', '💦💦💦', '😍😍😍😍', ]
 tp = len(phrases) - 1
 
@@ -33,40 +34,54 @@ def sleeptimer(time):
     print('Sleeping for '+str(sleeptime)+' mins.', 'It is currently '+str(datetime.now().strftime('%H:%M')))
     return sleep(time)
 
+def open_file():
+    if not os.path.isfile("commented_post.txt"):
+        pid = []
+    else:
+        with open("commented_post.txt", "r") as f:
+            pid = f.read().split("\n")
+            pid = list(filter(None, pid))
+    return pid
 
 def close_file(pid):
     with open("commented_post.txt", "w") as f:
-        f.write(str(pid))
+        f.write(str(pid)+ "\n")
         f.close()
 
 
 def comment():
-    while True:
-        if not os.path.isfile("commented_post.txt"):
-            pid = []
-        else:
-            with open("commented_post.txt", "r") as f:
-                pid = f.read().split("\n")
-                pid = list(filter(None, pid))
+    if not os.path.isfile("commented.txt"):
+        pid = []
+    else:
+        with open("commented.txt", "r") as f:
+            pid = f.read().split("\n")
+            pid = list(filter(None, pid))
 
-        try:
-            posts = bot.subreddit(subs[random.randint(1, ts)]).hot(limit=5)
-            for submission in posts:
-                if submission not in pid:
-                    pid.append(submission)
 
-            post_id = pid[random.randint(0, 5)]
-            bot.submission(id=post_id).reply(str(phrases[random.randint(0, tp)]))
-            close_file(post_id)
-            #sleeptimer(random.randint(300,900))
-            sleeptimer(45)
+    posts = bot.subreddit(subs[random.randint(1, ts)]).hot(limit=5)
+    for submission in posts:
+        if submission not in pid:
+            pid.append(submission)
+    post_id = pid[random.randint(0, 4)]
+    try:
+        bot.submission(id=post_id).reply(str(phrases[random.randint(0, tp)]))
+        print(post_id)
 
-        except Exception as e:
-            print(e)
-            sleeptimer(60)
+
+    except Exception as e:
+        print(e)
+
+    with open("commented.txt", "a") as f:
+        f.write(str(post_id) + "\n")
+    f.close()
+
+
+
 
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    comment()
+    while True:
+        comment()
+        sleeptimer(random.randint(300,900))
