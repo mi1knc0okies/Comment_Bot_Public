@@ -34,22 +34,16 @@ def sleeptimer(time):
     print('Sleeping for '+str(sleeptime)+' mins.', 'It is currently '+str(datetime.now().strftime('%H:%M')))
     return sleep(time)
 
-def open_file():
-    if not os.path.isfile("commented_post.txt"):
-        pid = []
+def use_random(total):
+    pt = len(total) - 1
+    if pt <= 1:
+        return 0
     else:
-        with open("commented_post.txt", "r") as f:
-            pid = f.read().split("\n")
-            pid = list(filter(None, pid))
-    return pid
-
-def close_file(pid):
-    with open("commented_post.txt", "w") as f:
-        f.write(str(pid)+ "\n")
-        f.close()
+        return random.randint(1, pt)
 
 
-def comment():
+def get_new_post():
+    new = []
     if not os.path.isfile("commented.txt"):
         pid = []
     else:
@@ -57,25 +51,33 @@ def comment():
             pid = f.read().split("\n")
             pid = list(filter(None, pid))
 
-
     posts = bot.subreddit(subs[random.randint(1, ts)]).hot(limit=5)
     for submission in posts:
-        if submission not in pid:
-            pid.append(submission)
-    post_id = pid[random.randint(0, 4)]
-    try:
-        bot.submission(id=post_id).reply(str(phrases[random.randint(0, tp)]))
-        print(post_id)
+        if submission.id not in pid:
+            new.append(submission)
 
+    if len(new) > 0:
+        post_id = new[use_random(new)]
+        return post_id
+    else:
+        return None
 
-    except Exception as e:
-        print(e)
+def comment():
+    new_post = get_new_post()
+    if new_post != None:
+        try:
+            bot.submission(id=new_post).reply(str(phrases[random.randint(0, tp)]))
+            print('commented on',new_post)
 
-    with open("commented.txt", "a") as f:
-        f.write(str(post_id) + "\n")
-    f.close()
+            with open("commented.txt", "a") as f:
+                f.write(str(new_post) + "\n")
+            f.close()
 
+        except Exception as e:
+            print(e)
 
+    else:
+        print('No new hot post')
 
 
 
